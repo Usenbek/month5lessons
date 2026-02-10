@@ -43,7 +43,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class ReviewDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ['id', 'text', 'product', 'stars']
+        fields = ['id', 'text','stars', 'product']
         depth = 2
 
 class ProductswithReviewsSerializer(serializers.ModelSerializer):
@@ -56,3 +56,26 @@ class ProductswithReviewsSerializer(serializers.ModelSerializer):
         
     def get_reviews_count(self, obj):
         return sum(obj.reviews.all().values_list("stars", flat=True)) / obj.reviews.count() if obj.reviews.count() > 0 else 0
+
+class ProductValidater(serializers.Serializer):
+    title = serializers.CharField(min_length=5, max_length=200)
+    description = serializers.CharField(min_length=10, max_length=1000)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+
+class CategoryValidater(serializers.Serializer):
+    name = serializers.CharField(min_length=3, max_length=100)
+
+class Review_detail_Validater(serializers.Serializer):
+    text = serializers.CharField(min_length=1, max_length=1000)
+    stars = serializers.FloatField(min_value=1, max_value=5)
+
+class ReviewValidater(serializers.Serializer):
+    text = serializers.CharField(min_length=1, max_length=1000)
+    stars = serializers.FloatField(min_value=1, max_value=5)
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+
+class Product_detail_Validater(serializers.Serializer):
+    title = serializers.CharField(min_length=5, max_length=200)
+    description = serializers.CharField(min_length=10, max_length=1000)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)
