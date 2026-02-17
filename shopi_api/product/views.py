@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateAPIView)
 
 
-# Create your views here.
+# Create your views here. 
 class ProductListAPIView(ListCreateAPIView):
     queryset = Product.objects.all()
 
