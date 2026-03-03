@@ -1,1 +1,13 @@
 .env
+# Python virtual environment
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.$py.class
+
+# database and migration dumps
+*.bak
+*_migrations.json
+*dump.json

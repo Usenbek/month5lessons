@@ -18,14 +18,12 @@ class Product(models.Model):
         return self.title
 
 
-CHOICE = (
-    (i, i) for i in range(1, 6)
-)
+CHOICES = [(i, i) for i in range(1, 6)]
 
 class Review(models.Model):
     text = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True, related_name='reviews')
-    stars = models.IntegerField(default=5, choices=CHOICE)
+    stars = models.IntegerField(default=5, choices=CHOICES)
 
     def __str__(self):
         return f"Review for {self.product.title}"
