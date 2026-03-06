@@ -7,7 +7,7 @@ from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPI
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from common.permissions import IsOwner, IsAnonymous, IsModerator
-
+from common.validators import check_user_age_for_product_creation
 # Create your views here. 
 
 class ProductListAPIView(ListCreateAPIView):
@@ -18,6 +18,13 @@ class ProductListAPIView(ListCreateAPIView):
         if self.request.method == 'POST': 
             return ProductValidater 
         return ProductListSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        check_user_age_for_product_creation(request)  
+        return super().post(request, *args, **kwargs)
     
 
 class ProductDetailAPIView(RetrieveUpdateDestroyAPIView):

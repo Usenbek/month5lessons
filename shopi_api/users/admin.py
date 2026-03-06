@@ -12,12 +12,12 @@ class CustomUserAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
             return (
-                (None, {'fields': ('email', 'password', 'phone_number')}),
+                (None, {'fields': ('email', 'password', 'phone_number', 'birthdate')}),
                 ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
                 ('Important dates', {'fields': ('last_login',)}),
             )
         return (
-            (None, {'fields': ('email', 'password')}),
+            (None, {'fields': ('email', 'password', 'birthdate')}),
             ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
             ('Important dates', {'fields': ('last_login',)}),
         )

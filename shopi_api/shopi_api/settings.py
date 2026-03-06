@@ -43,15 +43,10 @@ INSTALLED_APPS = [
     'drf_yasg',
     'users',
     'product',
+    'rest_framework_simplejwt',
+    "rest_framework_simplejwt.token_blacklist", 
 ]
 
-# JAZZMIN_SETTINGS = {
-#     "site_title": "Админка",
-#     "site_header": "Мой Сайт",
-#     "welcome_sign": "Добро пожаловать!",
-#     "search_model": ["auth.User", "auth.Group"],
-#     "show_ui_builder": True
-# }
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -60,6 +55,7 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [ 
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -118,6 +114,11 @@ SWAGGER_SETTINGS = {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
+        },
+        "JWT": {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
         }
     }
 }
@@ -164,3 +165,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=3),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+}
