@@ -27,7 +27,7 @@ def authorization_api_view(request):
     password = serializer.validated_data.get('password')
 
     user = authenticate(email=email, password=password)
-
+    
     if user:
         try:
             token = Token.objects.get(user=user)
@@ -35,6 +35,7 @@ def authorization_api_view(request):
             token = Token.objects.create(user=user)
         return Response(status=status.HTTP_200_OK, data={"token": token.key})
     return Response(status=status.HTTP_401_UNAUTHORIZED, data={"error": "Invalid credentials"})
+
  
 
 @swagger_auto_schema(
@@ -77,5 +78,7 @@ def confirm_code_api_view(request):
     user.is_active = True
     user.save()
     ConfirmCode.objects.filter(user_id=user_id).delete()
-    return Response(status=status.HTTP_200_OK, data={"message": "User confirmed"})
+    # create or get token for the user and return it
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response(status=status.HTTP_200_OK, data={"message": "User confirmed", "token": token.key})
 

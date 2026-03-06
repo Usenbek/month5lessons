@@ -31,23 +31,38 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'users',
-    'rest_framework.authtoken',
-    'product',
-    'rest_framework',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf_yasg'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_yasg',
+    'users',
+    'product',
 ]
 
+# JAZZMIN_SETTINGS = {
+#     "site_title": "Админка",
+#     "site_header": "Мой Сайт",
+#     "welcome_sign": "Добро пожаловать!",
+#     "search_model": ["auth.User", "auth.Group"],
+#     "show_ui_builder": True
+# }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [ 
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
@@ -83,11 +98,12 @@ WSGI_APPLICATION = 'shopi_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+AUTH_USER_MODEL = 'users.CustomUser'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-         'NAME': BASE_DIR / 'db.sqlite3 ',
+         'NAME': BASE_DIR / 'db.sqlite3',
         # 'USER': os.environ.get('DB_USER'),
         # 'PASSWORD': os.environ.get('DB_PASSWORD'),
         # 'HOST':  os.environ.get('DB_HOST'),
@@ -148,4 +164,3 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.CustomUser'

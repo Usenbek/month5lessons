@@ -12,7 +12,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'price', 'category', 'reviews']
         depth = 1
 
-
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -62,18 +61,45 @@ class ProductValidater(serializers.Serializer):
     description = serializers.CharField(min_length=10, max_length=1000)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
-
+    def create(self, validated_data):
+        return Product.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.price = validated_data.get('price', instance.price)
+        instance.category = validated_data.get('category', instance.category)
+        instance.save()
+        return instance
+    
 class CategoryValidater(serializers.Serializer):
     name = serializers.CharField(min_length=3, max_length=100)
-
+    def create(self, validated_data):
+        return Category.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        return instance
+    
 class Review_detail_Validater(serializers.Serializer):
     text = serializers.CharField(min_length=1, max_length=1000)
     stars = serializers.FloatField(min_value=1, max_value=5)
-
+    
 class ReviewValidater(serializers.Serializer):
     text = serializers.CharField(min_length=1, max_length=1000)
     stars = serializers.FloatField(min_value=1, max_value=5)
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+
+    def create(self, validated_data):
+        return Review.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.text = validated_data.get('text', instance.text)
+        instance.stars = validated_data.get('stars', instance.stars)
+        instance.product = validated_data.get('product', instance.product)
+        instance.save()
+        return instance
 
 class Product_detail_Validater(serializers.Serializer):
     title = serializers.CharField(min_length=5, max_length=200)
