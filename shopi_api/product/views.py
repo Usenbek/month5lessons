@@ -8,24 +8,43 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from common.permissions import IsOwner, IsAnonymous, IsModerator
 from common.validators import check_user_age_for_product_creation
+from django.core.cache import cache
 # Create your views here. 
+
+from django.core.cache import cache
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.generics import ListCreateAPIView
+
 
 class ProductListAPIView(ListCreateAPIView):
     queryset = Product.objects.all()
     permission_classes = [IsOwner | IsAnonymous]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST': 
-            return ProductValidater 
+        if self.request.method == 'POST':
+            return ProductValidater
         return ProductListSerializer
-    
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
     def post(self, request, *args, **kwargs):
-        check_user_age_for_product_creation(request)  
+        check_user_age_for_product_creation(request)
         return super().post(request, *args, **kwargs)
-    
+
+    def get(self, request, *args, **kwargs):
+        cached_data = cache.get('products_list')
+
+        if cached_data:
+            return Response(cached_data, status=status.HTTP_200_OK)
+
+        response = super().get(request, *args, **kwargs)
+
+        if response.status_code == status.HTTP_200_OK:
+            cache.set('products_list', response.data, timeout=300)
+
+        return response
 
 class ProductDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
@@ -77,3 +96,4 @@ class ReviewDetailAPIView(RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return Review_detail_Validater
         return ReviewDetailSerializer
+
