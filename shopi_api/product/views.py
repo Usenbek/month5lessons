@@ -29,22 +29,22 @@ class ProductListAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    def post(self, request, *args, **kwargs):
-        check_user_age_for_product_creation(request)
-        return super().post(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     check_user_age_for_product_creation(request)
+    #     return super().post(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        cached_data = cache.get('products_list')
+    # def get(self, request, *args, **kwargs):
+    #     cached_data = cache.get('products_list')
 
-        if cached_data:
-            return Response(cached_data, status=status.HTTP_200_OK)
+    #     if cached_data:
+    #         return Response(cached_data, status=status.HTTP_200_OK)
 
-        response = super().get(request, *args, **kwargs)
+    #     response = super().get(request, *args, **kwargs)
 
-        if response.status_code == status.HTTP_200_OK:
-            cache.set('products_list', response.data, timeout=300)
+    #     if response.status_code == status.HTTP_200_OK:
+    #         cache.set('products_list', response.data, timeout=300)
 
-        return response
+    #     return response
 
 class ProductDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()

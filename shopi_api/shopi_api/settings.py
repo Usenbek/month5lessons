@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import redis
 import os
 from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -188,3 +187,6 @@ CACHES = {
         }
     }
 }
+
+CELERY_BROKER_URL = 'redis://localhost:6379/3'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/3'

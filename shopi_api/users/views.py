@@ -19,7 +19,7 @@ from common.permissions import IsOwner, IsAnonymous
     responses={200: openapi.Response('Token returned')}
 )
 @api_view(http_method_names=['POST'])
-def authorization_api_view(request):
+def authorization_api_view(request):   
     serializer = UserAuthSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -41,6 +41,10 @@ def authorization_api_view(request):
 )
 @api_view(['POST'])
 def registration_api_view(request):
+    from .tasks import add, show_time, send_test_email
+    add.delay(5, 7)
+    show_time.delay()
+    send_test_email.delay()
     serializer = UserCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -55,19 +59,21 @@ def registration_api_view(request):
         )
 
     code = ''.join(random.choices('0123456789', k=6))
+    
+    return Response(status=status.HTTP_201_CREATED, data={"user_id": user.id,"confirm_code": code})
 
-    cache_key = f"otp:reg:{email}"
+    # cache_key = f"otp:reg:{email}"
 
-    cache.set(cache_key, code, timeout=300)
+    # cache.set(cache_key, code, timeout=300)
 
-    return Response(
-        status=status.HTTP_201_CREATED,
-        data={
-            "message": "User created. Confirm code sent.",
-            "user_id": user.id,
-            "dev_code": code 
-        }
-    )
+    # return Response(
+    #     status=status.HTTP_201_CREATED,
+    #     data={
+    #         "message": "User created. Confirm code sent.",
+    #         "user_id": user.id,
+    #         "dev_code": code 
+    #     }
+    # )
 
 @swagger_auto_schema(
     method='post',
