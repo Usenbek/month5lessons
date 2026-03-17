@@ -42,9 +42,9 @@ def authorization_api_view(request):
 @api_view(['POST'])
 def registration_api_view(request):
     from .tasks import add, show_time, send_test_email
-    add.delay(5, 7)
-    show_time.delay()
-    send_test_email.delay()
+    # add.delay(5, 7)
+    # show_time.delay()
+    # send_test_email.delay()
     serializer = UserCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
