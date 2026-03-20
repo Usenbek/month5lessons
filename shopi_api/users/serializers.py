@@ -46,3 +46,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['birthdate'] = self.user.birthdate.isoformat() if self.user.birthdate else None
         return data    
+
+
+class OAuthCodeSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=255)

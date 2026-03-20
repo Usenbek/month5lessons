@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from product import views
 from . import yasg
+from users.google_oauth import GoogleLoginAPIView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -33,6 +34,7 @@ urlpatterns = [
     path('api/v1/reviews/', views.ReviewListAPIView.as_view()),
     path('api/v1/reviews/<int:id>/', views.ReviewDetailAPIView.as_view()),
     path('api/v1/users/', include('users.urls')),
+    path('google-login/', GoogleLoginAPIView.as_view()),
 ]
 
 urlpatterns += yasg.urlpatterns
